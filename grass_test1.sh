@@ -9,8 +9,21 @@ rm -rf ~/GISDATA/
 grass -c EPSG:4326 ~/GISDATA
 
 # read the elevation file and set the region
-#r.in.gdal input=n55w095_elv.tif output=elevation_map --o
 r.in.gdal input=n50w110_elv.tif output=elevation_map --o
+
+# or batch read and merge
+# Get a list of files matching the pattern dem*.tif
+dem_files=(n*w*_elv.tif)
+# Import each DEM raster into the GRASS GIS location
+for ((i=0; i<${#dem_files[@]}; i++)); do
+    r.in.gdal input="${dem_files[$i]}" output=dem$i
+done
+# Create a comma-separated list of DEMs for r.patch
+dem_list=$(echo $(for ((i=0; i<${#dem_files[@]}; i++)); do echo -n "dem$i,"; done) | sed 's/,$//')
+# Merge the DEMs into a single raster using r.patch
+r.patch input=$dem_list output=elevation_map
+
+#set the region
 g.region raster=elevation_map
 
 # fill the DEM
