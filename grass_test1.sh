@@ -12,7 +12,8 @@ grass -c EPSG:4326 ~/GISDATA
 g.region -d
 
 # read the elevation file and set the region
-r.in.gdal input=n50w110_elv.tif output=elevation_map --o
+r.in.gdal input=n50w110_elv.tif output=elevation_map --o # prarie region
+# r.in.gdal input=n55w095_elv.tif output=elevation_map --o # Hudson bay region with cells identified as ocean
 
 # THE MERGE PART DOES NOT WORK
 # # or batch read and merge
