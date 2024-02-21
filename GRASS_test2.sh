@@ -14,7 +14,7 @@ g.region raster=elevation_map
 #r.fill.dir input=elevation_map format=grass output=filled direction=dir --o
 
 # execute the watershed
-r.watershed elevation=filled threshold=1000 accumulation=acc drainage=ddir stream=stream basin=basins --o
+r.watershed elevation=elevation_map threshold=1000 accumulation=acc drainage=ddir stream=stream basin=basins --o
 
 # output streams
 r.thin input=stream output=streamt type=line --o
