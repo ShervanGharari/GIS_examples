@@ -21,7 +21,7 @@ done
 # Create a comma-separated list of DEMs for r.patch
 dem_list=$(echo $(for ((i=0; i<${#dem_files[@]}; i++)); do echo -n "dem$i,"; done) | sed 's/,$//')
 # Merge the DEMs into a single raster using r.patch
-r.patch input=$dem_list output=elevation_map
+r.patch input=$dem_list output=elevation_map --o
 
 #set the region
 g.region raster=elevation_map
