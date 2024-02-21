@@ -31,7 +31,7 @@ r.in.gdal input=n50w110_elv.tif output=elevation_map --o
 g.region raster=elevation_map -p #-o
 
 # get the raster info
-r.info input=elevation_map
+r.info map=elevation_map
 
 # fill the DEM
 r.fill.dir input=elevation_map format=grass output=filled direction=dir areas=depressions --o
