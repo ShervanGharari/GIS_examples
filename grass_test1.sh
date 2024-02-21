@@ -2,29 +2,36 @@
 cd
 module reset
 module purge
-module load StdEnv/2020  gcc/9.3.0 grass/8.2.1
+module load StdEnv/2020 gcc/9.3.0 grass/8.2.1
 
 rm -rf ~/GISDATA/
 
 grass -c EPSG:4326 ~/GISDATA
 
+# set global domain
+g.region -d
+
 # read the elevation file and set the region
 r.in.gdal input=n50w110_elv.tif output=elevation_map --o
 
-# or batch read and merge
-# Get a list of files matching the pattern dem*.tif
-dem_files=(n*w*_elv.tif)
-# Import each DEM raster into the GRASS GIS location
-for ((i=0; i<${#dem_files[@]}; i++)); do
-    r.in.gdal input="${dem_files[$i]}" output=dem$i
-done
-# Create a comma-separated list of DEMs for r.patch
-dem_list=$(echo $(for ((i=0; i<${#dem_files[@]}; i++)); do echo -n "dem$i,"; done) | sed 's/,$//')
-# Merge the DEMs into a single raster using r.patch
-r.patch input=$dem_list output=elevation_map --o
+# THE MERGE PART DOES NOT WORK
+# # or batch read and merge
+# # Get a list of files matching the pattern dem*.tif
+# dem_files=(n*w*_elv.tif)
+# # Import each DEM raster into the GRASS GIS location
+# for ((i=0; i<${#dem_files[@]}; i++)); do
+#     r.in.gdal input="${dem_files[$i]}" output=dem$i
+# done
+# # Create a comma-separated list of DEMs for r.patch
+# dem_list=$(echo $(for ((i=0; i<${#dem_files[@]}; i++)); do echo -n "dem$i,"; done) | sed 's/,$//')
+# # Merge the DEMs into a single raster using r.patch
+# r.patch input=$dem_list output=elevation_map #--o
 
-#set the region
-g.region raster=elevation_map
+#set the region or update
+g.region raster=elevation_map -p #-o
+
+# get the raster info
+r.info input=elevation_map
 
 # fill the DEM
 r.fill.dir input=elevation_map format=grass output=filled direction=dir areas=depressions --o
@@ -52,3 +59,4 @@ v.out.ogr input=depressionsv layer=1 type=area format=GPKG output=~/depressions.
 
 # save on the filled DEM without depressions
 r.out.gdal input=filled output=filled.tif format=GTiff type=Float64 --o
+
