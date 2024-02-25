@@ -31,7 +31,9 @@ if [ ! -d "$output_directory" ]; then
 else
     echo "Output directory '$output_directory' already exists."
 fi
-
+```
+set the domain and read the file
+```
 # set global domain
 g.region -d
 
@@ -40,7 +42,9 @@ r.in.gdal input="$input_directory"/n50w110_elv.tif output=elevation_map --o
 
 #set the region or update
 g.region raster=elevation_map -p #-o
-
+```
+fill, remove the depression and do the river network to non depression zones
+```
 # fill the DEM
 r.fill.dir input=elevation_map format=grass output=filled direction=dir areas=depressions --o
 
@@ -50,7 +54,9 @@ r.mapcalc "filled = if(isnull(depressions), filled, null())" --o
 
 # execute the watershed
 r.watershed elevation=filled threshold=1000 accumulation=acc drainage=ddir stream=stream basin=basins --o
-
+```
+save the outputs
+```
 # output streams
 r.thin input=stream output=streamt --o
 r.to.vect input=streamt output=streamv type=line -s --o
@@ -67,4 +73,12 @@ v.out.ogr input=depressionsv layer=1 type=area format=GPKG output="$output_direc
 
 # save on the filled DEM without depressions
 r.out.gdal input=filled output="$output_directory"/filled.tif format=GTiff type=Float64 --o
+```
+zonal statistic for subbasins and elevation map
+```
+# Run v.rast.stats to calculate statistics
+v.rast.stats map=basinsv raster=filled column_prefix=stats
+
+# Export the attribute table of the vector layer to a CSV file
+v.db.select map=basinsv separator=comma file="$output_directory"/ele_stat.csv
 ```
