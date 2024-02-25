@@ -7,12 +7,13 @@ If needed load the necessary module for example `module reset; module purge; mod
 navigate to the given directory and pull and run the grass image using apptainer. 
 
 ```
-cd ~/scratch
-export APPTAINER_CACHEDIR=/home/shg096/scratch/
+cd ~/scratch # cd to home or the directory to build the sif file. 
+export APPTAINER_CACHEDIR=$(pwd) # currecnt directory
+rm -rf *.sif cache/
 apptainer pull docker://osgeo/grass-gis:releasebranch_8_3-debian
 apptainer run grass-gis_releasebranch_8_3-debian.sif
 rm -rf GISDATA/ # remove possible GISDATA
-grass -c EPSG:4326 GISDATA #create possible GISDATA and grass session
+grass -c EPSG:4326 GISDATA #create possible GISDATA and start a grass session
 ```
 
 example inside the grass gis
