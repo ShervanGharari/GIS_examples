@@ -2,7 +2,9 @@
 
 The docker image for grass can be found here. https://grass.osgeo.org/download/docker/
 
-navigate to the given directory and pull and run the grass image using apptainer
+If needed load the necessary module for example `module reset; module purge; module load StdEnv/2020 gcc/9.3.0 apptainer` or install `apptainer`.
+
+navigate to the given directory and pull and run the grass image using apptainer. 
 
 ```
 cd ~/scratch
@@ -17,7 +19,7 @@ example inside the grass gis
 
 ```
 # create the directories, input, output directories
-base_directory="/home/shg096/GRASS_APPTAINER_TEST/grass"
+base_directory="/home/shg096/GRASS_APPTAINER_TEST"
 input_directory="${base_directory}"/input
 output_directory="${base_directory}"/output
 # Check if the output directory exists
@@ -33,7 +35,7 @@ fi
 g.region -d
 
 # read the elevation file and set the region
-r.in.gdal input="$output_directory"/n50w110_elv.tif output=elevation_map --o
+r.in.gdal input="$input_directory"/n50w110_elv.tif output=elevation_map --o
 
 #set the region or update
 g.region raster=elevation_map -p #-o
@@ -51,17 +53,17 @@ r.watershed elevation=filled threshold=1000 accumulation=acc drainage=ddir strea
 # output streams
 r.thin input=stream output=streamt --o
 r.to.vect input=streamt output=streamv type=line -s --o
-v.out.ogr input=streamv layer=1 type=line format=GPKG output=~/stream_lines.gpkg output_layer=default -e -c --o
+v.out.ogr input=streamv layer=1 type=line format=GPKG output="$output_directory"/stream_lines.gpkg output_layer=default -e -c --o
 
 # output subbasins
 r.to.vect input=basins output=basinsv type=area -s --o
-v.out.ogr input=basinsv layer=1 type=area format=GPKG output=~/subbasins.gpkg output_layer=default -e -c --o
+v.out.ogr input=basinsv layer=1 type=area format=GPKG output="$output_directory"/subbasins.gpkg output_layer=default -e -c --o
 
 # save the depression area as raster and shapefile
 r.out.gdal input=depressions output=depressions.tif format=GTiff type=Float64 --o
 r.to.vect input=depressions output=depressionsv type=area -s --o
-v.out.ogr input=depressionsv layer=1 type=area format=GPKG output=~/depressions.gpkg output_layer=default -e -c --o
+v.out.ogr input=depressionsv layer=1 type=area format=GPKG output="$output_directory"/depressions.gpkg output_layer=default -e -c --o
 
 # save on the filled DEM without depressions
-r.out.gdal input=filled output=filled.tif format=GTiff type=Float64 --o
+r.out.gdal input=filled output="$output_directory"/filled.tif format=GTiff type=Float64 --o
 ```
