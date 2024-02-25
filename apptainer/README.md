@@ -80,5 +80,16 @@ zonal statistic for subbasins and elevation map
 v.rast.stats map=basinsv raster=filled column_prefix=stats
 
 # Export the attribute table of the vector layer to a CSV file
-v.db.select map=basinsv separator=comma file="$output_directory"/ele_stat.csv
+v.db.select map=basinsv separator=comma file="$output_directory"/ele_stat.csv -c --o
+```
+creation of elevation zones for each 100 meters, save as tif (and shapefile)
+```
+# Run mapcalc for zones of 100 meter (for positive) between -100 to 0 will be also zero
+r.mapcalc "filled_zones = int(filled / 100) * 100" --o
+#r.clump input=filled_zones output=filled_zones --o
+r.out.gdal input=filled_zones output="$output_directory"/filled_zones.tif format=GTiff type=Float64 --o
+
+# save on the zoned filled DEM without depressions
+# r.to.vect input=filled_zones output=filled_zonesv type=area -s --o
+# v.out.ogr input=filled_zonesv layer=1 type=area format=GPKG output="$output_directory"/filled_zones.gpkg output_layer=default -e -c --o
 ```
