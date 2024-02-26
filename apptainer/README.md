@@ -85,8 +85,7 @@ v.db.select map=basinsv separator=comma file="$output_directory"/ele_stat.csv -c
 creation of elevation zones for each 100 meters, save as tif (and shapefile)
 ```
 # Run mapcalc for zones of 100 meter (for positive) between -100 to 0 will be also zero
-r.mapcalc "filled_zones = int(filled / 100) * 100" --o
-#r.clump input=filled_zones output=filled_zones --o
+r.mapcalc "filled_zones = int(filled / 100) * 100" --o # maybe r.clump should be used, but it messed the result!
 r.out.gdal input=filled_zones output="$output_directory"/filled_zones.tif format=GTiff type=Float64 --o
 
 # save on the zoned filled DEM without depressions
@@ -96,5 +95,6 @@ r.out.gdal input=filled_zones output="$output_directory"/filled_zones.tif format
 zonal statistic for fraction of each elevation zone (decrete values like land cover)
 ```
 g.extension r.zonal.classes # from grassaddons
-r.zonal.classes raster=filled_zones zone_map=basinsv csvfile="$output_directory"/basin_elezone_frac.csv # vectormap=basinsv --o 
+# v.to.rast input=basinsv output=basins use=cat --o # if needed bring back the vector to shapefile
+r.zonal.classes raster=filled_zones zone_map=basins csvfile="$output_directory"/basin_elezone_frac.csv # vectormap=basinsv --o 
 ```
