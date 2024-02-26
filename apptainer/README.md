@@ -100,6 +100,6 @@ v.out.ogr input=filled_zonesv layer=1 type=area format=GPKG output="$output_dire
 zonal statistic for fraction of each elevation zone (discrete values like land cover)
 ```
 g.extension r.zonal.classes # from grassaddons
-# v.to.rast input=basinsv output=basins use=cat --o # if needed bring back the vector to raster
-r.zonal.classes raster=filled_zones zone_map=basins csvfile="$output_directory"/basin_elezone_frac.csv --o separator=comma # vectormap=basinsv
+v.to.rast input=basinsv output=basinsr use=cat --o # if needed bring back the vector to raster
+r.zonal.classes raster=filled_zones zone_map=basinsr csvfile="$output_directory"/basin_elezone_frac.csv --o separator=comma # prefix=frac
 ```
