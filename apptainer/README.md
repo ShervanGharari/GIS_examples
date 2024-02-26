@@ -1,4 +1,4 @@
-## step one: set the directory and pull the grass docker for a given operating system
+## Set the directory and pull the grass docker for a given operating system, create subbasins, elevation bands and zonal statistics of elevation bands or stat for elevation values
 
 The docker image for grass can be found here. https://grass.osgeo.org/download/docker/
 
@@ -17,7 +17,6 @@ grass -c EPSG:4326 GISDATA #create possible GISDATA and start a grass session
 ```
 
 example inside the grass gis
-
 ```
 # create the directories, input, output directories
 base_directory="/home/shg096/GRASS_APPTAINER_TEST"
@@ -44,6 +43,7 @@ r.in.gdal input="$input_directory"/n50w110_elv.tif output=elevation_map --o
 #set the region or update
 g.region raster=elevation_map -p #-o
 ```
+
 fill, remove the depression and do the river network to non depression zones
 ```
 # fill the DEM
