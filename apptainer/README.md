@@ -96,5 +96,5 @@ zonal statistic for fraction of each elevation zone (decrete values like land co
 ```
 g.extension r.zonal.classes # from grassaddons
 # v.to.rast input=basinsv output=basins use=cat --o # if needed bring back the vector to shapefile
-r.zonal.classes raster=filled_zones zone_map=basins csvfile="$output_directory"/basin_elezone_frac.csv # vectormap=basinsv --o 
+r.zonal.classes raster=filled_zones zone_map=basins csvfile="$output_directory"/basin_elezone_frac.csv --o # vectormap=basinsv
 ```
