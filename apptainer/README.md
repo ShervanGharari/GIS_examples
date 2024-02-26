@@ -32,6 +32,7 @@ else
     echo "Output directory '$output_directory' already exists."
 fi
 ```
+
 set the domain and read the file
 ```
 # set global domain
@@ -55,6 +56,7 @@ r.mapcalc "filled = if(isnull(depressions), filled, null())" --o
 # execute the watershed
 r.watershed elevation=filled threshold=1000 accumulation=acc drainage=ddir stream=stream basin=basins --o
 ```
+
 save the outputs
 ```
 # output streams
@@ -74,6 +76,7 @@ v.out.ogr input=depressionsv layer=1 type=area format=GPKG output="$output_direc
 # save on the filled DEM without depressions
 r.out.gdal input=filled output="$output_directory"/filled.tif format=GTiff type=Float64 --o
 ```
+
 zonal statistic for subbasins and elevation map
 ```
 # Run v.rast.stats to calculate statistics
@@ -82,6 +85,7 @@ v.rast.stats map=basinsv raster=filled column_prefix=stats
 # Export the attribute table of the vector layer to a CSV file
 v.db.select map=basinsv separator=comma file="$output_directory"/ele_stat.csv -c --o
 ```
+
 creation of elevation zones for each 100 meters, save as tif (and shapefile)
 ```
 # Run mapcalc for zones of 100 meter (for positive) between -100 to 0 will be also zero
@@ -89,12 +93,13 @@ r.mapcalc "filled_zones = int(filled / 100) * 100" --o # maybe r.clump should be
 r.out.gdal input=filled_zones output="$output_directory"/filled_zones.tif format=GTiff type=Float64 --o
 
 # save on the zoned filled DEM without depressions
-# r.to.vect input=filled_zones output=filled_zonesv type=area -s --o
-# v.out.ogr input=filled_zonesv layer=1 type=area format=GPKG output="$output_directory"/filled_zones.gpkg output_layer=default -e -c --o
+r.to.vect input=filled_zones output=filled_zonesv type=area -s --o
+v.out.ogr input=filled_zonesv layer=1 type=area format=GPKG output="$output_directory"/filled_zones.gpkg output_layer=default -e -c --o
 ```
-zonal statistic for fraction of each elevation zone (decrete values like land cover)
+
+zonal statistic for fraction of each elevation zone (discrete values like land cover)
 ```
 g.extension r.zonal.classes # from grassaddons
 # v.to.rast input=basinsv output=basins use=cat --o # if needed bring back the vector to raster
-r.zonal.classes raster=filled_zones zone_map=basins csvfile="$output_directory"/basin_elezone_frac.csv --o # vectormap=basinsv
+r.zonal.classes raster=filled_zones zone_map=basins csvfile="$output_directory"/basin_elezone_frac.csv --o separator=comma # vectormap=basinsv
 ```
