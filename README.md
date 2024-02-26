@@ -1,1 +1,3 @@
-## example for grass using apptainer or docker
+## example for using grass (including using apptainer or docker)
+
+
