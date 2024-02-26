@@ -95,6 +95,6 @@ r.out.gdal input=filled_zones output="$output_directory"/filled_zones.tif format
 zonal statistic for fraction of each elevation zone (decrete values like land cover)
 ```
 g.extension r.zonal.classes # from grassaddons
-# v.to.rast input=basinsv output=basins use=cat --o # if needed bring back the vector to shapefile
+# v.to.rast input=basinsv output=basins use=cat --o # if needed bring back the vector to raster
 r.zonal.classes raster=filled_zones zone_map=basins csvfile="$output_directory"/basin_elezone_frac.csv --o # vectormap=basinsv
 ```
