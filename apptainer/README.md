@@ -93,3 +93,8 @@ r.out.gdal input=filled_zones output="$output_directory"/filled_zones.tif format
 # r.to.vect input=filled_zones output=filled_zonesv type=area -s --o
 # v.out.ogr input=filled_zonesv layer=1 type=area format=GPKG output="$output_directory"/filled_zones.gpkg output_layer=default -e -c --o
 ```
+zonal statistic for fraction of each elevation zone (decrete values like land cover)
+```
+g.extension r.zonal.classes # from grassaddons
+r.zonal.classes raster=filled_zones zone_map=basinsv csvfile="$output_directory"/basin_elezone_frac.csv # vectormap=basinsv --o 
+```
