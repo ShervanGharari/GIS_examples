@@ -57,6 +57,16 @@ r.mapcalc "filled = if(isnull(depressions), filled, null())" --o
 r.watershed elevation=filled threshold=1000 accumulation=acc drainage=ddir stream=stream basin=basins --o
 ```
 
+used the filled dem and stream to estimate distance and hand
+```
+g.extension r.stream.distance # Ensure the module is available
+r.stream.distance elevation=filled direction=ddir stream_rast=stream method=downstream distance=distance difference=HAND --o
+r.out.gdal input=HAND output=HAND.tif format=GTiff type=Float64 --o
+# save HAND lower than 1 meter
+r.mapcalc "HAND_1m = if(HAND > 1, null(), HAND)"
+r.out.gdal input=HAND_1m output=HAND_1m.tif format="GTiff" --o
+```
+
 save the outputs
 ```
 # output streams
